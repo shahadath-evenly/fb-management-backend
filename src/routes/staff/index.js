@@ -1,8 +1,11 @@
 import { Router } from 'express';
+import menuRoutes from './menu.routes.js';
 
 const router = Router();
 
-// Staff feature routes (menu, inventory, sales) are mounted here
-// starting Phase 10.
+router.use('/menu', menuRoutes);
+
+// Inventory and sales routes are mounted here starting their
+// respective phases.
 
 export default router;
