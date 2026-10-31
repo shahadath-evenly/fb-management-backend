@@ -1,0 +1,7 @@
+model OutletReceiptCounter {
+  id         String @id @default(uuid()) @db.Uuid
+  outletId   String @unique @db.Uuid
+  lastNumber Int    @default(0)
+
+  outlet Outlet @relation(fields: [outletId], references: [id], onDelete: Restrict)
+}
