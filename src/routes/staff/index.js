@@ -1,11 +1,12 @@
 import { Router } from 'express';
 import menuRoutes from './menu.routes.js';
+import inventoryRoutes from './inventory.routes.js';
 
 const router = Router();
 
 router.use('/menu', menuRoutes);
+router.use('/inventory', inventoryRoutes);
 
-// Inventory and sales routes are mounted here starting their
-// respective phases.
+// Sales routes are mounted here starting Phase 12.
 
 export default router;
