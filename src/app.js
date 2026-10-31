@@ -1,16 +1,15 @@
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';
 import routes from './routes/index.js';
+import { env } from './config/env.js';
 import { notFoundMiddleware } from './middlewares/not-found.middleware.js';
 import { errorMiddleware } from './middlewares/error.middleware.js';
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: env.frontendUrl }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
 
 app.use('/api', routes);
 

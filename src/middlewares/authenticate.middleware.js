@@ -4,8 +4,7 @@ import { ApiError } from '../utils/ApiError.js';
 
 export function authenticateMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
-  const bearerToken = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
-  const token = bearerToken || req.cookies?.token;
+  const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
 
   if (!token) {
     return next(new ApiError(401, 'Authentication required'));
