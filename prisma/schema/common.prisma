@@ -1,0 +1,6 @@
+// Shared across models that need an active/inactive toggle (Outlet,
+// User). Kept as one enum rather than per-model duplicates.
+enum EntityStatus {
+  active
+  inactive
+}

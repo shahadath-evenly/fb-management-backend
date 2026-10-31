@@ -24,6 +24,12 @@ export const authService = {
       throw new ApiError(401, 'Invalid email or password');
     }
 
+    // Same generic message as a wrong password — don't reveal account
+    // state to an unauthenticated request.
+    if (user.status !== 'active') {
+      throw new ApiError(401, 'Invalid email or password');
+    }
+
     const token = generateToken(user);
     return { token, user: toSafeUser(user) };
   },

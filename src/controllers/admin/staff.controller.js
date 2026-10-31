@@ -9,13 +9,18 @@ export const staffController = {
   }),
 
   list: asyncHandler(async (req, res) => {
-    const staff = await staffService.listStaff();
-    successResponse(res, 200, 'Staff retrieved', { staff });
+    const result = await staffService.listStaff(req.query);
+    successResponse(res, 200, 'Staff retrieved', result);
   }),
 
   update: asyncHandler(async (req, res) => {
     const staff = await staffService.updateStaff(req.params.id, req.body);
     successResponse(res, 200, 'Staff updated', { staff });
+  }),
+
+  updateStatus: asyncHandler(async (req, res) => {
+    const staff = await staffService.updateStaffStatus(req.params.id, req.body.status);
+    successResponse(res, 200, 'Staff status updated', { staff });
   }),
 
   remove: asyncHandler(async (req, res) => {

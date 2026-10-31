@@ -1,4 +1,5 @@
 import { prisma } from '../config/database.js';
+import { getPaginationArgs } from '../utils/pagination.js';
 
 export const userRepository = {
   findByEmail(email) {
@@ -13,16 +14,40 @@ export const userRepository = {
     return prisma.user.create({ data });
   },
 
-  findAllStaff() {
-    return prisma.user.findMany({
-      where: { role: 'staff' },
-      include: { outlet: { select: { id: true, name: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAllStaffPaginated({ page, limit, search, status }) {
+    const where = {
+      role: 'staff',
+      ...(search
+        ? {
+            OR: [
+              { firstName: { contains: search, mode: 'insensitive' } },
+              { lastName: { contains: search, mode: 'insensitive' } },
+              { email: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : {}),
+      ...(status ? { status } : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        include: { outlet: { select: { id: true, name: true } } },
+        orderBy: { createdAt: 'desc' },
+        ...getPaginationArgs({ page, limit }),
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return { items, total };
   },
 
   update(id, data) {
     return prisma.user.update({ where: { id }, data });
+  },
+
+  updateStatus(id, status) {
+    return prisma.user.update({ where: { id }, data: { status } });
   },
 
   delete(id) {

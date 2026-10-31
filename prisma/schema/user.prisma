@@ -4,18 +4,20 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(uuid()) @db.Uuid
+  id        String       @id @default(uuid()) @db.Uuid
   firstName String
   lastName  String
-  email     String   @unique
+  email     String       @unique
   password  String
   role      UserRole
-  outletId  String?  @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  outletId  String?      @db.Uuid
+  status    EntityStatus @default(active)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   outlet Outlet? @relation(fields: [outletId], references: [id], onDelete: Restrict)
 
   @@index([outletId])
   @@index([role])
+  @@index([status])
 }

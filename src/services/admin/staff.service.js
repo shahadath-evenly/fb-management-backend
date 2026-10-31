@@ -3,6 +3,7 @@ import { ApiError } from '../../utils/ApiError.js';
 import { toSafeUser } from '../../utils/sanitizeUser.js';
 import { userRepository } from '../../repositories/user.repository.js';
 import { outletRepository } from '../../repositories/outlet.repository.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 
 export const staffService = {
   async createStaff({ firstName, lastName, email, password, outletId }) {
@@ -25,14 +26,15 @@ export const staffService = {
       password: hashedPassword,
       role: 'staff',
       outletId,
+      // status defaults to 'active' at the schema level
     });
 
     return toSafeUser(staff);
   },
 
-  async listStaff() {
-    const staff = await userRepository.findAllStaff();
-    return staff.map(toSafeUser);
+  async listStaff({ page, limit, search, status }) {
+    const { items, total } = await userRepository.findAllStaffPaginated({ page, limit, search, status });
+    return { items: items.map(toSafeUser), pagination: buildPaginationMeta({ page, limit, total }) };
   },
 
   async updateStaff(id, { firstName, lastName, email, outletId }) {
@@ -54,6 +56,15 @@ export const staffService = {
     }
 
     const updated = await userRepository.update(id, { firstName, lastName, email, outletId });
+    return toSafeUser(updated);
+  },
+
+  async updateStaffStatus(id, status) {
+    const existingStaff = await userRepository.findById(id);
+    if (!existingStaff || existingStaff.role !== 'staff') {
+      throw new ApiError(404, 'Staff not found');
+    }
+    const updated = await userRepository.updateStatus(id, status);
     return toSafeUser(updated);
   },
 

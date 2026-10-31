@@ -9,12 +9,22 @@ export const outletController = {
   }),
 
   list: asyncHandler(async (req, res) => {
-    const outlets = await outletService.listOutlets();
-    successResponse(res, 200, 'Outlets retrieved', { outlets });
+    const result = await outletService.listOutlets(req.query);
+    successResponse(res, 200, 'Outlets retrieved', result);
   }),
 
   update: asyncHandler(async (req, res) => {
     const outlet = await outletService.updateOutlet(req.params.id, req.body.name);
     successResponse(res, 200, 'Outlet updated', { outlet });
+  }),
+
+  updateStatus: asyncHandler(async (req, res) => {
+    const outlet = await outletService.updateOutletStatus(req.params.id, req.body.status);
+    successResponse(res, 200, 'Outlet status updated', { outlet });
+  }),
+
+  remove: asyncHandler(async (req, res) => {
+    await outletService.deleteOutlet(req.params.id);
+    successResponse(res, 200, 'Outlet deleted', null);
   }),
 };
