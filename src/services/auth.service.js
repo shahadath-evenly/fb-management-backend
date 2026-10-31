@@ -3,11 +3,7 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env.js';
 import { ApiError } from '../utils/ApiError.js';
 import { userRepository } from '../repositories/user.repository.js';
-
-function toSafeUser(user) {
-  const { password, ...safeUser } = user;
-  return safeUser;
-}
+import { toSafeUser } from '../utils/sanitizeUser.js';
 
 function generateToken(user) {
   return jwt.sign({ role: user.role, outletId: user.outletId }, env.jwtSecret, {
