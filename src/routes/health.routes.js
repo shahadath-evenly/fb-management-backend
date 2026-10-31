@@ -1,15 +1,12 @@
 import { Router } from 'express';
+import { successResponse } from '../utils/response.js';
 
 const router = Router();
 
 router.get('/', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Service is healthy',
-    data: {
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-    },
+  successResponse(res, 200, 'Service is healthy', {
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
   });
 });
 

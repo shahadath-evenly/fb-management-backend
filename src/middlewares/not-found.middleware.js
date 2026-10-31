@@ -1,6 +1,5 @@
+import { ApiError } from '../utils/ApiError.js';
+
 export function notFoundMiddleware(req, res, next) {
-  res.status(404).json({
-    success: false,
-    message: `Route not found: ${req.method} ${req.originalUrl}`,
-  });
+  next(new ApiError(404, `Route not found: ${req.method} ${req.originalUrl}`));
 }
