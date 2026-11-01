@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { paginationFields } from '../common/pagination.schema.js';
 
 const basePriceField = yup
   .string()
@@ -24,4 +25,8 @@ export const updateMenuSchema = yup.object({
     .max(100, 'Name must be at most 100 characters')
     .required('Menu item name is required'),
   basePrice: basePriceField,
+});
+
+export const listMenusQuerySchema = yup.object({
+  ...paginationFields,
 });

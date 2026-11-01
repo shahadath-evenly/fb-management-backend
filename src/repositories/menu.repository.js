@@ -1,8 +1,18 @@
 import { prisma } from '../config/database.js';
+import { getPaginationArgs } from '../utils/pagination.js';
 
 export const menuRepository = {
-  findAll() {
-    return prisma.masterMenu.findMany({ orderBy: { createdAt: 'desc' } });
+  async findAllPaginated({ page, limit, search }) {
+    const where = search ? { name: { contains: search, mode: 'insensitive' } } : {};
+    const [items, total] = await Promise.all([
+      prisma.masterMenu.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        ...getPaginationArgs({ page, limit }),
+      }),
+      prisma.masterMenu.count({ where }),
+    ]);
+    return { items, total };
   },
 
   findById(id) {

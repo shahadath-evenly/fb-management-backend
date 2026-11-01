@@ -9,8 +9,8 @@ export const menuController = {
   }),
 
   list: asyncHandler(async (req, res) => {
-    const menus = await menuService.listMenus();
-    successResponse(res, 200, 'Menu items retrieved', { menus });
+    const result = await menuService.listMenus(req.query);
+    successResponse(res, 200, 'Menu items retrieved', result);
   }),
 
   update: asyncHandler(async (req, res) => {

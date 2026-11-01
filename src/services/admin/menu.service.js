@@ -1,13 +1,15 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { menuRepository } from '../../repositories/menu.repository.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 
 export const menuService = {
   async createMenu({ name, basePrice }) {
     return menuRepository.create({ name, basePrice });
   },
 
-  async listMenus() {
-    return menuRepository.findAll();
+  async listMenus({ page, limit, search }) {
+    const { items, total } = await menuRepository.findAllPaginated({ page, limit, search });
+    return { items, pagination: buildPaginationMeta({ page, limit, total }) };
   },
 
   async updateMenu(id, { name, basePrice }) {

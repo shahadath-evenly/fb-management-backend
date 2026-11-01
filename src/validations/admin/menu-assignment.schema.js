@@ -1,4 +1,5 @@
 import * as yup from 'yup';
+import { paginationFields } from '../common/pagination.schema.js';
 
 const priceField = yup
   .string()
@@ -17,6 +18,7 @@ export const updateAssignmentPriceSchema = yup.object({
 });
 
 export const listAssignmentsQuerySchema = yup.object({
+  ...paginationFields,
   outletId: yup.string().uuid('Invalid outlet id').optional(),
   menuId: yup.string().uuid('Invalid menu id').optional(),
 });

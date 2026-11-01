@@ -9,8 +9,8 @@ export const menuAssignmentController = {
   }),
 
   list: asyncHandler(async (req, res) => {
-    const assignments = await menuAssignmentService.listAssignments(req.query);
-    successResponse(res, 200, 'Assignments retrieved', { assignments });
+    const result = await menuAssignmentService.listAssignments(req.query);
+    successResponse(res, 200, 'Assignments retrieved', result);
   }),
 
   updatePrice: asyncHandler(async (req, res) => {

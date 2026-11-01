@@ -2,6 +2,7 @@ import { ApiError } from '../../utils/ApiError.js';
 import { outletMenuRepository } from '../../repositories/outlet-menu.repository.js';
 import { outletRepository } from '../../repositories/outlet.repository.js';
 import { menuRepository } from '../../repositories/menu.repository.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 
 export const menuAssignmentService = {
   async createAssignment({ outletId, menuId, price }) {
@@ -23,8 +24,15 @@ export const menuAssignmentService = {
     return outletMenuRepository.create({ outletId, menuId, price });
   },
 
-  async listAssignments(filters) {
-    return outletMenuRepository.findAll(filters);
+  async listAssignments({ page, limit, search, outletId, menuId }) {
+    const { items, total } = await outletMenuRepository.findAllPaginated({
+      page,
+      limit,
+      search,
+      outletId,
+      menuId,
+    });
+    return { items, pagination: buildPaginationMeta({ page, limit, total }) };
   },
 
   async updatePrice(id, price) {
