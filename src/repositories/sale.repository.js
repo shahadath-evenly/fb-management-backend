@@ -8,6 +8,27 @@ export const saleRepository = {
   findOutletMenusByIds(tx, outletId, menuIds) {
     return tx.outletMenu.findMany({
       where: { outletId, menuId: { in: menuIds } },
+      include: { menu: { select: { name: true } } },
+    });
+  },
+
+  // Used only to build a user-friendly error message when some
+  // requested items aren't assigned to the outlet — those ids have no
+  // OutletMenu row to read a name from, so look the names up directly.
+  findMenuNamesByIds(tx, menuIds) {
+    return tx.masterMenu.findMany({
+      where: { id: { in: menuIds } },
+      select: { id: true, name: true },
+    });
+  },
+
+  // Informational read after a failed conditional decrement, used only
+  // to report the current stock in the error message — not part of
+  // the atomic stock check itself.
+  findCurrentStock(tx, outletId, menuId) {
+    return tx.outletInventory.findUnique({
+      where: { outletId_menuId: { outletId, menuId } },
+      select: { stock: true },
     });
   },
 

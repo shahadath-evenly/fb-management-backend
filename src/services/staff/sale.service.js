@@ -37,14 +37,22 @@ export const staffSaleService = {
         const assignedIds = new Set(
           assignments.map((assignment) => assignment.menuId),
         );
-        const missing = menuIds.filter((id) => !assignedIds.has(id));
+        const missingIds = menuIds.filter((id) => !assignedIds.has(id));
+        const missingMenus = await saleRepository.findMenuNamesByIds(
+          tx,
+          missingIds,
+        );
+        const missingNames = missingMenus.map((menu) => menu.name);
         throw new ApiError(
           400,
-          `The following items are not assigned to this outlet: ${missing.join(", ")}`,
+          `The following items are not assigned to this outlet: ${missingNames.join(", ")}`,
         );
       }
       const priceByMenuId = new Map(
         assignments.map((assignment) => [assignment.menuId, assignment.price]),
+      );
+      const nameByMenuId = new Map(
+        assignments.map((assignment) => [assignment.menuId, assignment.menu.name]),
       );
 
       // Atomic conditional decrement per item. Each updateMany is a
@@ -63,9 +71,15 @@ export const staffSaleService = {
           item.quantity,
         );
         if (result.count !== 1) {
+          const current = await saleRepository.findCurrentStock(
+            tx,
+            outletId,
+            item.menuId,
+          );
+          const availableStock = current?.stock ?? 0;
           throw new ApiError(
             409,
-            `Insufficient stock for menu item ${item.menuId}`,
+            `Insufficient stock for "${nameByMenuId.get(item.menuId)}". Requested ${item.quantity}, available ${availableStock}.`,
           );
         }
 
