@@ -12,6 +12,19 @@ numbers.
 - **Frontend repo:** https://github.com/shahadath-evenly/fb-management-frontend
 - **Architecture documentation:** [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md) (ERD, scaling plan, microservices evolution, offline POS strategy)
 
+### Try the live app
+
+Open the live app and log in as HQ Admin with:
+
+| Field | Value |
+|---|---|
+| URL | https://fb-management-dev.netlify.app |
+| Email | `admin@admin.com` |
+| Password | `Test123$$` |
+
+This gives full HQ access: manage outlets, create staff, manage the
+master menu, assign items/prices to outlets, and view both reports.
+
 ## Tech stack
 
 | Layer | Choice |
