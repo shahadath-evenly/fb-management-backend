@@ -1,12 +1,24 @@
 import { prisma } from '../config/database.js';
+import { getPaginationArgs } from '../utils/pagination.js';
 
 export const outletInventoryRepository = {
-  findAllByOutlet(outletId) {
-    return prisma.outletInventory.findMany({
-      where: { outletId },
-      include: { menu: { select: { id: true, name: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
+  async findAllByOutletPaginated({ outletId, page, limit, search }) {
+    const where = {
+      outletId,
+      ...(search ? { menu: { name: { contains: search, mode: 'insensitive' } } } : {}),
+    };
+
+    const [items, total] = await Promise.all([
+      prisma.outletInventory.findMany({
+        where,
+        include: { menu: { select: { id: true, name: true } } },
+        orderBy: { createdAt: 'desc' },
+        ...getPaginationArgs({ page, limit }),
+      }),
+      prisma.outletInventory.count({ where }),
+    ]);
+
+    return { items, total };
   },
 
   findByOutletAndMenu(outletId, menuId) {

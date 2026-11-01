@@ -1,10 +1,21 @@
 import { ApiError } from '../../utils/ApiError.js';
 import { outletInventoryRepository } from '../../repositories/outlet-inventory.repository.js';
 import { outletMenuRepository } from '../../repositories/outlet-menu.repository.js';
+import { buildPaginationMeta } from '../../utils/pagination.js';
 
 export const staffInventoryService = {
-  async listInventory(outletId) {
-    return outletInventoryRepository.findAllByOutlet(outletId);
+  async listInventory(outletId, { page, limit, search }) {
+    const { items, total } = await outletInventoryRepository.findAllByOutletPaginated({
+      outletId,
+      page,
+      limit,
+      search,
+    });
+
+    return {
+      items,
+      pagination: buildPaginationMeta({ page, limit, total }),
+    };
   },
 
   async addStock(outletId, { menuId, stock }) {

@@ -4,8 +4,8 @@ import { successResponse } from '../../utils/response.js';
 
 export const staffInventoryController = {
   list: asyncHandler(async (req, res) => {
-    const inventory = await staffInventoryService.listInventory(req.user.outletId);
-    successResponse(res, 200, 'Inventory retrieved', { inventory });
+    const result = await staffInventoryService.listInventory(req.user.outletId, req.query);
+    successResponse(res, 200, 'Inventory retrieved', result);
   }),
 
   addStock: asyncHandler(async (req, res) => {
